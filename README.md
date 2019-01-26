@@ -4,5 +4,5 @@
 
 [![npm version](https://img.shields.io/npm/v/@rdfjs/dataset.svg)](https://www.npmjs.com/package/@rdfjs/dataset)
 
-A basic implementation of the [RDFJS Dataset](https://rdf.js.org/dataset-spec/dataset-spec.html).
-See [the specification](https://rdf.js.org/dataset-spec/dataset-spec.html) for further details.
+A basic implementation of the [RDFJS Dataset](https://rdf.js.org/dataset-spec/).
+See [the specification](https://rdf.js.org/dataset-spec/) for further details.
