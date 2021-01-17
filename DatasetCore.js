@@ -144,6 +144,8 @@ class DatasetCore {
 
     // The cached quad count is now invalid
     this._size = null
+
+    return this
   }
 
   delete (quad) {
@@ -165,7 +167,7 @@ class DatasetCore {
       !(predicates = subjects[predicate]) ||
       !(object in predicates)
     ) {
-      return false
+      return this
     }
 
     // Remove it from all indexes
@@ -181,10 +183,12 @@ class DatasetCore {
 
     // Remove the graph if it is empty
     for (subject in graphItem.subjects) { // eslint-disable-line no-unreachable-loop
-      return true
+      return this
     }
 
     delete graphs[graph]
+
+    return this
   }
 
   has (quad) {

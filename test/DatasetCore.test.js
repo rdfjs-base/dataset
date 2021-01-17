@@ -73,6 +73,15 @@ function runTests (rdf) {
         assert.strictEqual(typeof dataset.add, 'function')
       })
 
+      it('should return itself', () => {
+        const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
+        const dataset = rdf.dataset()
+
+        const result = dataset.add(quad)
+
+        assert.strictEqual(result, dataset)
+      })
+
       it('should add the given Quad', () => {
         const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
         const dataset = rdf.dataset()
@@ -177,6 +186,15 @@ function runTests (rdf) {
         const dataset = rdf.dataset()
 
         assert.strictEqual(typeof dataset.delete, 'function')
+      })
+
+      it('should return itself', () => {
+        const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
+        const dataset = rdf.dataset([quad])
+
+        const result = dataset.delete(quad)
+
+        assert.strictEqual(result, dataset)
       })
 
       it('should remove the given Quad', () => {
