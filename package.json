@@ -1,6 +1,6 @@
 {
   "name": "@rdfjs/dataset",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A basic implementation of the RDFJS Dataset",
   "main": "index.js",
   "scripts": {
