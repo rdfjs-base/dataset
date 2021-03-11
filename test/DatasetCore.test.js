@@ -1,7 +1,6 @@
-/* global describe, it */
-
 const assert = require('assert')
 const namespace = require('@rdfjs/namespace')
+const { describe, it } = require('mocha')
 
 function runTests (rdf) {
   const ex = namespace('http://example.org/', rdf)
@@ -43,6 +42,28 @@ function runTests (rdf) {
 
         assert.strictEqual(dataset.size, 2)
       })
+
+      it('should be updated after Quads are added', () => {
+        const dataset = rdf.dataset([rdf.quad(ex.subject, ex.predicate, ex.object1)])
+
+        assert.strictEqual(dataset.size, 1)
+
+        dataset.add(rdf.quad(ex.subject, ex.predicate, ex.object2))
+
+        assert.strictEqual(dataset.size, 2)
+      })
+
+      it('should be updated after Quads are deleted', () => {
+        const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
+        const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
+        const dataset = rdf.dataset([quad1, quad2])
+
+        assert.strictEqual(dataset.size, 2)
+
+        dataset.delete(quad1)
+
+        assert.strictEqual(dataset.size, 1)
+      })
     })
 
     describe('add', () => {
@@ -50,6 +71,15 @@ function runTests (rdf) {
         const dataset = rdf.dataset()
 
         assert.strictEqual(typeof dataset.add, 'function')
+      })
+
+      it('should return itself', () => {
+        const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
+        const dataset = rdf.dataset()
+
+        const result = dataset.add(quad)
+
+        assert.strictEqual(result, dataset)
       })
 
       it('should add the given Quad', () => {
@@ -71,6 +101,84 @@ function runTests (rdf) {
 
         assert.strictEqual(dataset.size, 1)
       })
+
+      it('should support Quads with Blank Nodes', () => {
+        const quad = rdf.quad(ex.subject, ex.predicate, rdf.blankNode())
+        const dataset = rdf.dataset()
+
+        dataset.add(quad)
+
+        assert.strictEqual(dataset.size, 1)
+        assert(dataset.has(quad))
+      })
+
+      it('should support Quads with Literals', () => {
+        const quad = rdf.quad(ex.subject, ex.predicate, rdf.literal('test'))
+        const dataset = rdf.dataset()
+
+        dataset.add(quad)
+
+        assert.strictEqual(dataset.size, 1)
+        assert(dataset.has(quad))
+      })
+
+      it('should support Quads with language Literals', () => {
+        const quadA = rdf.quad(ex.subject, ex.predicate, rdf.literal('test', 'en'))
+        const quadB = rdf.quad(ex.subject, ex.predicate, rdf.literal('test', 'de'))
+        const dataset = rdf.dataset()
+
+        dataset.add(quadA)
+
+        assert.strictEqual(dataset.size, 1)
+        assert(dataset.has(quadA))
+        assert(!dataset.has(quadB))
+
+        dataset.add(quadB)
+
+        assert.strictEqual(dataset.size, 2)
+        assert(dataset.has(quadA))
+        assert(dataset.has(quadB))
+      })
+
+      it('should support Quads with datatype Literals', () => {
+        const quadA = rdf.quad(ex.subject, ex.predicate, rdf.literal('123', ex.datatypeA))
+        const quadB = rdf.quad(ex.subject, ex.predicate, rdf.literal('123', ex.datatypeB))
+        const dataset = rdf.dataset()
+
+        dataset.add(quadA)
+
+        assert.strictEqual(dataset.size, 1)
+        assert(dataset.has(quadA))
+        assert(!dataset.has(quadB))
+
+        dataset.add(quadB)
+
+        assert.strictEqual(dataset.size, 2)
+        assert(dataset.has(quadA))
+        assert(dataset.has(quadB))
+      })
+
+      it('should support Quads having a Quad as subject', () => {
+        const quadA = rdf.quad(ex.subject, ex.predicate, ex.object)
+        const quadB = rdf.quad(quadA, ex.predicate, ex.object)
+        const dataset = rdf.dataset()
+
+        dataset.add(quadB)
+
+        assert.strictEqual(dataset.size, 1)
+        assert(dataset.has(quadB))
+      })
+
+      it('should support Quads having a Quad as object', () => {
+        const quadA = rdf.quad(ex.subject, ex.predicate, ex.object)
+        const quadB = rdf.quad(ex.subject, ex.predicate, quadA)
+        const dataset = rdf.dataset()
+
+        dataset.add(quadB)
+
+        assert.strictEqual(dataset.size, 1)
+        assert(dataset.has(quadB))
+      })
     })
 
     describe('delete', () => {
@@ -78,6 +186,15 @@ function runTests (rdf) {
         const dataset = rdf.dataset()
 
         assert.strictEqual(typeof dataset.delete, 'function')
+      })
+
+      it('should return itself', () => {
+        const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
+        const dataset = rdf.dataset([quad])
+
+        const result = dataset.delete(quad)
+
+        assert.strictEqual(result, dataset)
       })
 
       it('should remove the given Quad', () => {
@@ -108,6 +225,18 @@ function runTests (rdf) {
         dataset.delete(quadCloned)
 
         assert(!dataset.has(quad))
+      })
+
+      it('should ignore an unknown Quad', () => {
+        const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
+        const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
+        const dataset = rdf.dataset([quad1])
+
+        dataset.delete(quad2)
+
+        assert(dataset.has(quad1))
+        assert(!dataset.has(quad2))
+        assert.strictEqual(dataset.size, 1)
       })
     })
 

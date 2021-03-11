@@ -1,5 +1,5 @@
 function runTests (rdf) {
-  require('./DatasetCore')(rdf)
+  require('./DatasetCore.test.js')(rdf)
 }
 
 if (global.rdf) {
