@@ -213,7 +213,7 @@ class DatasetCore {
       (isString(predicate) && !(predicateId = ids[predicate])) ||
       (isString(object) && !(objectId = ids[object]))
     ) {
-      return 0
+      return false
     }
 
     return this._countInIndex(graphItem.objects, objectId, subjectId, predicateId) === 1
