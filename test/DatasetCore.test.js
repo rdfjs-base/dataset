@@ -1,4 +1,4 @@
-const assert = require('assert')
+const { strictEqual } = require('assert')
 const namespace = require('@rdfjs/namespace')
 const { describe, it } = require('mocha')
 
@@ -8,7 +8,7 @@ function runTests (rdf) {
   describe('DatasetCore', () => {
     describe('factory', () => {
       it('should be a function', () => {
-        assert.strictEqual(typeof rdf.dataset, 'function')
+        strictEqual(typeof rdf.dataset, 'function')
       })
 
       it('should add the given Quads', () => {
@@ -17,8 +17,8 @@ function runTests (rdf) {
 
         const dataset = rdf.dataset([quad1, quad2])
 
-        assert(dataset.has(quad1))
-        assert(dataset.has(quad2))
+        strictEqual(dataset.has(quad1), true)
+        strictEqual(dataset.has(quad2), true)
       })
     })
 
@@ -26,13 +26,13 @@ function runTests (rdf) {
       it('should be a number property', () => {
         const dataset = rdf.dataset()
 
-        assert.strictEqual(typeof dataset.size, 'number')
+        strictEqual(typeof dataset.size, 'number')
       })
 
       it('should be 0 if there are no Quads in the Dataset', () => {
         const dataset = rdf.dataset()
 
-        assert.strictEqual(dataset.size, 0)
+        strictEqual(dataset.size, 0)
       })
 
       it('should be equal to the number of Quads in the Dataset', () => {
@@ -40,17 +40,17 @@ function runTests (rdf) {
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
         const dataset = rdf.dataset([quad1, quad2])
 
-        assert.strictEqual(dataset.size, 2)
+        strictEqual(dataset.size, 2)
       })
 
       it('should be updated after Quads are added', () => {
         const dataset = rdf.dataset([rdf.quad(ex.subject, ex.predicate, ex.object1)])
 
-        assert.strictEqual(dataset.size, 1)
+        strictEqual(dataset.size, 1)
 
         dataset.add(rdf.quad(ex.subject, ex.predicate, ex.object2))
 
-        assert.strictEqual(dataset.size, 2)
+        strictEqual(dataset.size, 2)
       })
 
       it('should be updated after Quads are deleted', () => {
@@ -58,11 +58,11 @@ function runTests (rdf) {
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
         const dataset = rdf.dataset([quad1, quad2])
 
-        assert.strictEqual(dataset.size, 2)
+        strictEqual(dataset.size, 2)
 
         dataset.delete(quad1)
 
-        assert.strictEqual(dataset.size, 1)
+        strictEqual(dataset.size, 1)
       })
     })
 
@@ -70,7 +70,7 @@ function runTests (rdf) {
       it('should be a function', () => {
         const dataset = rdf.dataset()
 
-        assert.strictEqual(typeof dataset.add, 'function')
+        strictEqual(typeof dataset.add, 'function')
       })
 
       it('should return itself', () => {
@@ -79,7 +79,7 @@ function runTests (rdf) {
 
         const result = dataset.add(quad)
 
-        assert.strictEqual(result, dataset)
+        strictEqual(result, dataset)
       })
 
       it('should add the given Quad', () => {
@@ -88,7 +88,7 @@ function runTests (rdf) {
 
         dataset.add(quad)
 
-        assert(dataset.has(quad))
+        strictEqual(dataset.has(quad), true)
       })
 
       it('should not add duplicate Quads', () => {
@@ -99,7 +99,7 @@ function runTests (rdf) {
         dataset.add(quadA)
         dataset.add(quadB)
 
-        assert.strictEqual(dataset.size, 1)
+        strictEqual(dataset.size, 1)
       })
 
       it('should support Quads with Blank Nodes', () => {
@@ -108,8 +108,8 @@ function runTests (rdf) {
 
         dataset.add(quad)
 
-        assert.strictEqual(dataset.size, 1)
-        assert(dataset.has(quad))
+        strictEqual(dataset.size, 1)
+        strictEqual(dataset.has(quad), true)
       })
 
       it('should support Quads with Literals', () => {
@@ -118,8 +118,8 @@ function runTests (rdf) {
 
         dataset.add(quad)
 
-        assert.strictEqual(dataset.size, 1)
-        assert(dataset.has(quad))
+        strictEqual(dataset.size, 1)
+        strictEqual(dataset.has(quad), true)
       })
 
       it('should support Quads with language Literals', () => {
@@ -129,15 +129,15 @@ function runTests (rdf) {
 
         dataset.add(quadA)
 
-        assert.strictEqual(dataset.size, 1)
-        assert(dataset.has(quadA))
-        assert(!dataset.has(quadB))
+        strictEqual(dataset.size, 1)
+        strictEqual(dataset.has(quadA), true)
+        strictEqual(dataset.has(quadB), false)
 
         dataset.add(quadB)
 
-        assert.strictEqual(dataset.size, 2)
-        assert(dataset.has(quadA))
-        assert(dataset.has(quadB))
+        strictEqual(dataset.size, 2)
+        strictEqual(dataset.has(quadA), true)
+        strictEqual(dataset.has(quadB), true)
       })
 
       it('should support Quads with datatype Literals', () => {
@@ -147,15 +147,15 @@ function runTests (rdf) {
 
         dataset.add(quadA)
 
-        assert.strictEqual(dataset.size, 1)
-        assert(dataset.has(quadA))
-        assert(!dataset.has(quadB))
+        strictEqual(dataset.size, 1)
+        strictEqual(dataset.has(quadA), true)
+        strictEqual(!dataset.has(quadB), true)
 
         dataset.add(quadB)
 
-        assert.strictEqual(dataset.size, 2)
-        assert(dataset.has(quadA))
-        assert(dataset.has(quadB))
+        strictEqual(dataset.size, 2)
+        strictEqual(dataset.has(quadA), true)
+        strictEqual(dataset.has(quadB), true)
       })
 
       it('should support Quads having a Quad as subject', () => {
@@ -165,8 +165,8 @@ function runTests (rdf) {
 
         dataset.add(quadB)
 
-        assert.strictEqual(dataset.size, 1)
-        assert(dataset.has(quadB))
+        strictEqual(dataset.size, 1)
+        strictEqual(dataset.has(quadB), true)
       })
 
       it('should support Quads having a Quad as object', () => {
@@ -176,8 +176,8 @@ function runTests (rdf) {
 
         dataset.add(quadB)
 
-        assert.strictEqual(dataset.size, 1)
-        assert(dataset.has(quadB))
+        strictEqual(dataset.size, 1)
+        strictEqual(dataset.has(quadB), true)
       })
     })
 
@@ -185,7 +185,7 @@ function runTests (rdf) {
       it('should be a function', () => {
         const dataset = rdf.dataset()
 
-        assert.strictEqual(typeof dataset.delete, 'function')
+        strictEqual(typeof dataset.delete, 'function')
       })
 
       it('should return itself', () => {
@@ -194,7 +194,7 @@ function runTests (rdf) {
 
         const result = dataset.delete(quad)
 
-        assert.strictEqual(result, dataset)
+        strictEqual(result, dataset)
       })
 
       it('should remove the given Quad', () => {
@@ -203,7 +203,7 @@ function runTests (rdf) {
 
         dataset.delete(quad)
 
-        assert(!dataset.has(quad))
+        strictEqual(dataset.has(quad), false)
       })
 
       it('should remove only the given Quad', () => {
@@ -213,8 +213,8 @@ function runTests (rdf) {
 
         dataset.delete(quad1)
 
-        assert(!dataset.has(quad1))
-        assert(dataset.has(quad2))
+        strictEqual(dataset.has(quad1), false)
+        strictEqual(dataset.has(quad2), true)
       })
 
       it('should remove the Quad with the same SPOG as the given Quad', () => {
@@ -224,7 +224,7 @@ function runTests (rdf) {
 
         dataset.delete(quadCloned)
 
-        assert(!dataset.has(quad))
+        strictEqual(dataset.has(quad), false)
       })
 
       it('should ignore an unknown Quad', () => {
@@ -234,9 +234,9 @@ function runTests (rdf) {
 
         dataset.delete(quad2)
 
-        assert(dataset.has(quad1))
-        assert(!dataset.has(quad2))
-        assert.strictEqual(dataset.size, 1)
+        strictEqual(dataset.has(quad1), true)
+        strictEqual(dataset.has(quad2), false)
+        strictEqual(dataset.size, 1)
       })
     })
 
@@ -244,7 +244,7 @@ function runTests (rdf) {
       it('should be a function', () => {
         const dataset = rdf.dataset()
 
-        assert.strictEqual(typeof dataset.has, 'function')
+        strictEqual(typeof dataset.has, 'function')
       })
 
       it('should return false if the given Quad is not in the Dataset', () => {
@@ -252,7 +252,7 @@ function runTests (rdf) {
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
         const dataset = rdf.dataset([quad1])
 
-        assert(!dataset.has(quad2))
+        strictEqual(dataset.has(quad2), false)
       })
 
       it('should return true if the given Quad is in the Dataset', () => {
@@ -260,7 +260,7 @@ function runTests (rdf) {
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
         const dataset = rdf.dataset([quad1, quad2])
 
-        assert(dataset.has(quad2))
+        strictEqual(dataset.has(quad2), true)
       })
     })
 
@@ -268,7 +268,7 @@ function runTests (rdf) {
       it('should be a function', () => {
         const dataset = rdf.dataset()
 
-        assert.strictEqual(typeof dataset.match, 'function')
+        strictEqual(typeof dataset.match, 'function')
       })
 
       it('should use the given subject to select Quads', () => {
@@ -278,8 +278,8 @@ function runTests (rdf) {
 
         const matches = dataset.match(ex.subject2)
 
-        assert.strictEqual(matches.size, 1)
-        assert(matches.has(quad2))
+        strictEqual(matches.size, 1)
+        strictEqual(matches.has(quad2), true)
       })
 
       it('should use the given predicate to select Quads', () => {
@@ -289,8 +289,8 @@ function runTests (rdf) {
 
         const matches = dataset.match(null, ex.predicate2)
 
-        assert.strictEqual(matches.size, 1)
-        assert(matches.has(quad2))
+        strictEqual(matches.size, 1)
+        strictEqual(matches.has(quad2), true)
       })
 
       it('should use the given object to select Quads', () => {
@@ -300,8 +300,8 @@ function runTests (rdf) {
 
         const matches = dataset.match(null, null, ex.object2)
 
-        assert.strictEqual(matches.size, 1)
-        assert(matches.has(quad2))
+        strictEqual(matches.size, 1)
+        strictEqual(matches.has(quad2), true)
       })
 
       it('should use the given graph to select Quads', () => {
@@ -311,8 +311,8 @@ function runTests (rdf) {
 
         const matches = dataset.match(null, null, null, ex.graph2)
 
-        assert.strictEqual(matches.size, 1)
-        assert(matches.has(quad2))
+        strictEqual(matches.size, 1)
+        strictEqual(matches.has(quad2), true)
       })
 
       it('should return an empty Dataset if there are no matches', () => {
@@ -322,7 +322,7 @@ function runTests (rdf) {
 
         const matches = dataset.match(null, null, ex.object3)
 
-        assert.strictEqual(matches.size, 0)
+        strictEqual(matches.size, 0)
       })
     })
 
@@ -330,7 +330,7 @@ function runTests (rdf) {
       it('should be a function', () => {
         const dataset = rdf.dataset()
 
-        assert.strictEqual(typeof dataset[Symbol.iterator], 'function')
+        strictEqual(typeof dataset[Symbol.iterator], 'function')
       })
 
       it('should return an iterator', () => {
@@ -340,8 +340,8 @@ function runTests (rdf) {
 
         const iterator = dataset[Symbol.iterator]()
 
-        assert.strictEqual(typeof iterator.next, 'function')
-        assert.strictEqual(typeof iterator.next().value, 'object')
+        strictEqual(typeof iterator.next, 'function')
+        strictEqual(typeof iterator.next().value, 'object')
       })
 
       it('should iterate over all Quads', () => {
@@ -357,9 +357,9 @@ function runTests (rdf) {
           output.add(item.value)
         }
 
-        assert.strictEqual(output.size, 2)
-        assert(output.has(quad1))
-        assert(output.has(quad2))
+        strictEqual(output.size, 2)
+        strictEqual(output.has(quad1), true)
+        strictEqual(output.has(quad2), true)
       })
     })
   })
