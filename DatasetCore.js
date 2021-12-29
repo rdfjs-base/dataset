@@ -447,4 +447,4 @@ class DatasetCore {
   }
 }
 
-module.exports = DatasetCore
+export default DatasetCore

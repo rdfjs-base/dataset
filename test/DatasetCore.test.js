@@ -1,21 +1,23 @@
-const { strictEqual } = require('assert')
-const namespace = require('@rdfjs/namespace')
-const { describe, it } = require('mocha')
+import { strictEqual } from 'assert'
+import rdf from '@rdfjs/data-model'
+import namespace from '@rdfjs/namespace'
 
-function runTests (rdf) {
+function runTests ({ factory, mocha }) {
+  const { describe, it } = mocha
+
   const ex = namespace('http://example.org/', rdf)
 
   describe('DatasetCore', () => {
     describe('factory', () => {
       it('should be a function', () => {
-        strictEqual(typeof rdf.dataset, 'function')
+        strictEqual(typeof factory.dataset, 'function')
       })
 
       it('should add the given Quads', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
 
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         strictEqual(dataset.has(quad1), true)
         strictEqual(dataset.has(quad2), true)
@@ -24,13 +26,13 @@ function runTests (rdf) {
 
     describe('size', () => {
       it('should be a number property', () => {
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         strictEqual(typeof dataset.size, 'number')
       })
 
       it('should be 0 if there are no Quads in the Dataset', () => {
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         strictEqual(dataset.size, 0)
       })
@@ -38,13 +40,13 @@ function runTests (rdf) {
       it('should be equal to the number of Quads in the Dataset', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         strictEqual(dataset.size, 2)
       })
 
       it('should be updated after Quads are added', () => {
-        const dataset = rdf.dataset([rdf.quad(ex.subject, ex.predicate, ex.object1)])
+        const dataset = factory.dataset([rdf.quad(ex.subject, ex.predicate, ex.object1)])
 
         strictEqual(dataset.size, 1)
 
@@ -56,7 +58,7 @@ function runTests (rdf) {
       it('should be updated after Quads are deleted', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         strictEqual(dataset.size, 2)
 
@@ -68,14 +70,14 @@ function runTests (rdf) {
 
     describe('add', () => {
       it('should be a function', () => {
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         strictEqual(typeof dataset.add, 'function')
       })
 
       it('should return itself', () => {
         const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         const result = dataset.add(quad)
 
@@ -84,7 +86,7 @@ function runTests (rdf) {
 
       it('should add the given Quad', () => {
         const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         dataset.add(quad)
 
@@ -94,7 +96,7 @@ function runTests (rdf) {
       it('should not add duplicate Quads', () => {
         const quadA = rdf.quad(ex.subject, ex.predicate, ex.object)
         const quadB = rdf.quad(ex.subject, ex.predicate, ex.object)
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         dataset.add(quadA)
         dataset.add(quadB)
@@ -104,7 +106,7 @@ function runTests (rdf) {
 
       it('should support Quads with Blank Nodes', () => {
         const quad = rdf.quad(ex.subject, ex.predicate, rdf.blankNode())
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         dataset.add(quad)
 
@@ -114,7 +116,7 @@ function runTests (rdf) {
 
       it('should support Quads with Literals', () => {
         const quad = rdf.quad(ex.subject, ex.predicate, rdf.literal('test'))
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         dataset.add(quad)
 
@@ -125,7 +127,7 @@ function runTests (rdf) {
       it('should support Quads with language Literals', () => {
         const quadA = rdf.quad(ex.subject, ex.predicate, rdf.literal('test', 'en'))
         const quadB = rdf.quad(ex.subject, ex.predicate, rdf.literal('test', 'de'))
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         dataset.add(quadA)
 
@@ -143,7 +145,7 @@ function runTests (rdf) {
       it('should support Quads with datatype Literals', () => {
         const quadA = rdf.quad(ex.subject, ex.predicate, rdf.literal('123', ex.datatypeA))
         const quadB = rdf.quad(ex.subject, ex.predicate, rdf.literal('123', ex.datatypeB))
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         dataset.add(quadA)
 
@@ -161,7 +163,7 @@ function runTests (rdf) {
       it('should support Quads having a Quad as subject', () => {
         const quadA = rdf.quad(ex.subject, ex.predicate, ex.object)
         const quadB = rdf.quad(quadA, ex.predicate, ex.object)
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         dataset.add(quadB)
 
@@ -172,7 +174,7 @@ function runTests (rdf) {
       it('should support Quads having a Quad as object', () => {
         const quadA = rdf.quad(ex.subject, ex.predicate, ex.object)
         const quadB = rdf.quad(ex.subject, ex.predicate, quadA)
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         dataset.add(quadB)
 
@@ -183,14 +185,14 @@ function runTests (rdf) {
 
     describe('delete', () => {
       it('should be a function', () => {
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         strictEqual(typeof dataset.delete, 'function')
       })
 
       it('should return itself', () => {
         const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
-        const dataset = rdf.dataset([quad])
+        const dataset = factory.dataset([quad])
 
         const result = dataset.delete(quad)
 
@@ -199,7 +201,7 @@ function runTests (rdf) {
 
       it('should remove the given Quad', () => {
         const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
-        const dataset = rdf.dataset([quad])
+        const dataset = factory.dataset([quad])
 
         dataset.delete(quad)
 
@@ -209,7 +211,7 @@ function runTests (rdf) {
       it('should remove only the given Quad', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         dataset.delete(quad1)
 
@@ -220,7 +222,7 @@ function runTests (rdf) {
       it('should remove the Quad with the same SPOG as the given Quad', () => {
         const quad = rdf.quad(ex.subject, ex.predicate, ex.object)
         const quadCloned = rdf.quad(quad.subject, quad.predicate, quad.object, quad.graph)
-        const dataset = rdf.dataset([quad])
+        const dataset = factory.dataset([quad])
 
         dataset.delete(quadCloned)
 
@@ -230,7 +232,7 @@ function runTests (rdf) {
       it('should ignore an unknown Quad', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
-        const dataset = rdf.dataset([quad1])
+        const dataset = factory.dataset([quad1])
 
         dataset.delete(quad2)
 
@@ -242,7 +244,7 @@ function runTests (rdf) {
 
     describe('has', () => {
       it('should be a function', () => {
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         strictEqual(typeof dataset.has, 'function')
       })
@@ -250,7 +252,7 @@ function runTests (rdf) {
       it('should return false if the given Quad is not in the Dataset', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
-        const dataset = rdf.dataset([quad1])
+        const dataset = factory.dataset([quad1])
 
         strictEqual(dataset.has(quad2), false)
       })
@@ -258,7 +260,7 @@ function runTests (rdf) {
       it('should return true if the given Quad is in the Dataset', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         strictEqual(dataset.has(quad2), true)
       })
@@ -266,7 +268,7 @@ function runTests (rdf) {
 
     describe('match', () => {
       it('should be a function', () => {
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         strictEqual(typeof dataset.match, 'function')
       })
@@ -274,7 +276,7 @@ function runTests (rdf) {
       it('should use the given subject to select Quads', () => {
         const quad1 = rdf.quad(ex.subject1, ex.predicate, ex.object)
         const quad2 = rdf.quad(ex.subject2, ex.predicate, ex.object)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         const matches = dataset.match(ex.subject2)
 
@@ -285,7 +287,7 @@ function runTests (rdf) {
       it('should use the given predicate to select Quads', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate1, ex.object)
         const quad2 = rdf.quad(ex.subject, ex.predicate2, ex.object)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         const matches = dataset.match(null, ex.predicate2)
 
@@ -296,7 +298,7 @@ function runTests (rdf) {
       it('should use the given object to select Quads', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object1)
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object2)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         const matches = dataset.match(null, null, ex.object2)
 
@@ -307,7 +309,7 @@ function runTests (rdf) {
       it('should use the given graph to select Quads', () => {
         const quad1 = rdf.quad(ex.subject, ex.predicate, ex.object, ex.graph1)
         const quad2 = rdf.quad(ex.subject, ex.predicate, ex.object, ex.graph2)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         const matches = dataset.match(null, null, null, ex.graph2)
 
@@ -318,7 +320,7 @@ function runTests (rdf) {
       it('should return an empty Dataset if there are no matches', () => {
         const quad1 = rdf.quad(ex.subject1, ex.predicate, ex.object)
         const quad2 = rdf.quad(ex.subject2, ex.predicate, ex.object)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         const matches = dataset.match(null, null, ex.object3)
 
@@ -328,7 +330,7 @@ function runTests (rdf) {
 
     describe('Symbol.iterator', () => {
       it('should be a function', () => {
-        const dataset = rdf.dataset()
+        const dataset = factory.dataset()
 
         strictEqual(typeof dataset[Symbol.iterator], 'function')
       })
@@ -336,7 +338,7 @@ function runTests (rdf) {
       it('should return an iterator', () => {
         const quad1 = rdf.quad(ex.subject1, ex.predicate, ex.object)
         const quad2 = rdf.quad(ex.subject2, ex.predicate, ex.object)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         const iterator = dataset[Symbol.iterator]()
 
@@ -347,11 +349,11 @@ function runTests (rdf) {
       it('should iterate over all Quads', () => {
         const quad1 = rdf.quad(ex.subject1, ex.predicate, ex.object)
         const quad2 = rdf.quad(ex.subject2, ex.predicate, ex.object)
-        const dataset = rdf.dataset([quad1, quad2])
+        const dataset = factory.dataset([quad1, quad2])
 
         const iterator = dataset[Symbol.iterator]()
 
-        const output = rdf.dataset()
+        const output = factory.dataset()
 
         for (let item = iterator.next(); item.value; item = iterator.next()) {
           output.add(item.value)
@@ -365,4 +367,4 @@ function runTests (rdf) {
   })
 }
 
-module.exports = runTests
+export default runTests

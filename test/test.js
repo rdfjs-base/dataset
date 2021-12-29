@@ -1,4 +1,7 @@
-const rdf = require('..')
-const runTests = require('.')
+import mocha from 'mocha'
+import rdf from '../index.js'
+import runTests from './index.js'
 
-runTests(rdf)
+mocha.describe('@rdfjs/dataset', () => {
+  runTests({ factory: rdf, mocha })
+})
