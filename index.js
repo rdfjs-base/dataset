@@ -1,8 +1,5 @@
-const rdf = require('@rdfjs/data-model')
-const DatasetCore = require('./DatasetCore')
+import Factory from './Factory.js'
 
-function dataset (quads) {
-  return new DatasetCore(quads)
-}
+const factory = new Factory()
 
-module.exports = Object.assign({ dataset }, rdf)
+export default factory
