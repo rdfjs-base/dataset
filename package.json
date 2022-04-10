@@ -1,6 +1,6 @@
 {
   "name": "@rdfjs/dataset",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "An indexed implementation of the RDF/JS Dataset",
   "type": "module",
   "main": "index.js",
