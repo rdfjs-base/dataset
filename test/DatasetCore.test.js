@@ -142,6 +142,42 @@ function runTests ({ factory, mocha }) {
         strictEqual(dataset.has(quadB), true)
       })
 
+      it('should support Quads with directional language Literals', () => {
+        const quadA = rdf.quad(ex.subject, ex.predicate, rdf.literal('test', { language: 'en', direction: 'ltr' }))
+        const quadB = rdf.quad(ex.subject, ex.predicate, rdf.literal('test', { language: 'en', direction: 'rtl' }))
+        const dataset = factory.dataset()
+
+        dataset.add(quadA)
+
+        strictEqual(dataset.size, 1)
+        strictEqual(dataset.has(quadA), true)
+        strictEqual(dataset.has(quadB), false)
+
+        dataset.add(quadB)
+
+        strictEqual(dataset.size, 2)
+        strictEqual(dataset.has(quadA), true)
+        strictEqual(dataset.has(quadB), true)
+      })
+
+      it('should support Quads with directional and non-directional Literals using the same language', () => {
+        const quadA = rdf.quad(ex.subject, ex.predicate, rdf.literal('test', 'en'))
+        const quadB = rdf.quad(ex.subject, ex.predicate, rdf.literal('test', { language: 'en', direction: 'ltr' }))
+        const dataset = factory.dataset()
+
+        dataset.add(quadA)
+
+        strictEqual(dataset.size, 1)
+        strictEqual(dataset.has(quadA), true)
+        strictEqual(dataset.has(quadB), false)
+
+        dataset.add(quadB)
+
+        strictEqual(dataset.size, 2)
+        strictEqual(dataset.has(quadA), true)
+        strictEqual(dataset.has(quadB), true)
+      })
+
       it('should support Quads with datatype Literals', () => {
         const quadA = rdf.quad(ex.subject, ex.predicate, rdf.literal('123', ex.datatypeA))
         const quadB = rdf.quad(ex.subject, ex.predicate, rdf.literal('123', ex.datatypeB))

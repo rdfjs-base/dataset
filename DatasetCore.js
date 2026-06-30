@@ -35,7 +35,7 @@ function termToId (term) {
 
     case 'Literal':
       if (term.language) {
-        return `"${term.value}"@${term.language}`
+        return `"${term.value}"@${term.language}${term.direction ? `--${term.direction}` : ''}`
       }
 
       return `"${term.value}"${term.datatype && term.datatype.value !== xsdString ? `^^${term.datatype.value}` : ''}`
